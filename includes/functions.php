@@ -50,7 +50,8 @@ function isLoggedIn(): bool {
  * @return bool True if admin session exists
  */
 function isAdmin(): bool {
-    return isset($_SESSION['admin_id']);
+    return isset($_SESSION['admin_id'])
+        && (int) $_SESSION['admin_id'] > 0;
 }
 
 /**

@@ -10,9 +10,8 @@ require_once __DIR__ . '/../includes/functions.php';
 unset($_SESSION['admin_id']);
 unset($_SESSION['admin_name']);
 
-if (!isset($_SESSION['user_id'])) {
-    session_destroy();
-}
+// Destroy the entire session to ensure complete logout
+session_destroy();
 
 header("Location: " . SITE_URL . "/admin/login.php");
 exit();
