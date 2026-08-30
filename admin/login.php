@@ -1,31 +1,41 @@
 <?php
 /**
  * Admin Login
- * Food-Mania - Separate admin authentication
+ * Food-Mania
  */
 
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-// Session is already started by functions.php
+// Make sure session is started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Redirect if already logged in
-if (isAdmin()) {
-    redirect(SITE_URL . '/admin/dashboard.php');
-}
-
 $pdo = getDBConnection();
 $errors = [];
+
+// Redirect if already logged in
+if (isAdmin()) {
+    header('Location: ' . SITE_URL . '/admin/dashboard.php');
+    exit;
+}
+
+
+// ======================================================
+// LOGIN
+// ======================================================
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Validate fields
+
+    // --------------------------------------------------
+    // VALIDATION
+    // --------------------------------------------------
+
     if ($email === '') {
         $errors[] = 'Email is required.';
     }
@@ -33,6 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($password === '') {
         $errors[] = 'Password is required.';
     }
+
+
+    // --------------------------------------------------
+    // AUTHENTICATION
+    // --------------------------------------------------
 
     if (empty($errors)) {
 
@@ -51,47 +66,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($admin) {
 
-                $storedPassword = $admin['password'];
+            if (!$admin) {
 
-                /*
-                 * Support both password formats:
-                 *
-                 * ID 1 = hashed password
-                 * ID 2 = plain-text password
-                 * ID 3 = plain-text password
-                 */
+                $errors[] = 'Invalid email or password.';
 
-                $passwordInfo = password_get_info($storedPassword);
+            } else {
 
-                if ($passwordInfo['algo'] !== 0) {
+                $storedPassword = (string) $admin['password'];
 
-                    // Hashed password
-                    $passwordValid = password_verify(
-                        $password,
-                        $storedPassword
-                    );
+                $passwordValid = false;
 
-                } else {
 
-                    // Plain-text password
-                    $passwordValid = hash_equals(
-                        $storedPassword,
-                        $password
-                    );
+                // --------------------------------------------------
+                // FIRST: TRY SECURE HASH
+                // --------------------------------------------------
+
+                if (password_verify($password, $storedPassword)) {
+
+                    $passwordValid = true;
+
                 }
+
+
+                // --------------------------------------------------
+                // SECOND: SUPPORT OLD PLAIN-TEXT PASSWORD
+                // --------------------------------------------------
+
+                elseif (hash_equals($storedPassword, $password)) {
+
+                    $passwordValid = true;
+
+
+                    /*
+                     * Convert the old plain-text password
+                     * into a secure hash.
+                     */
+
+                    $newHash = password_hash(
+                        $password,
+                        PASSWORD_DEFAULT
+                    );
+
+                    $update = $pdo->prepare("
+                        UPDATE admins
+                        SET password = :password
+                        WHERE id = :id
+                    ");
+
+                    $update->execute([
+                        ':password' => $newHash,
+                        ':id' => $admin['id']
+                    ]);
+                }
+
+
+                // --------------------------------------------------
+                // LOGIN SUCCESS
+                // --------------------------------------------------
 
                 if ($passwordValid) {
 
-                    // Set admin session
+                    /*
+                     * Create a fresh session ID.
+                     */
+                    session_regenerate_id(true);
+
+
+                    /*
+                     * Store admin information.
+                     */
                     $_SESSION['admin_id'] = (int) $admin['id'];
                     $_SESSION['admin_name'] = $admin['name'];
 
-                    // Save session before redirect
+
+                    /*
+                     * Save session before redirect.
+                     */
                     session_write_close();
 
-                    // Go to dashboard
+
+                    /*
+                     * Redirect to dashboard.
+                     */
                     header(
                         'Location: ' .
                         SITE_URL .
@@ -104,10 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $errors[] = 'Invalid email or password.';
                 }
-
-            } else {
-
-                $errors[] = 'Invalid email or password.';
             }
 
         } catch (PDOException $e) {
@@ -117,10 +170,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
 $pageTitle = 'Admin Login';
 
 include __DIR__ . '/../includes/header.php';
 ?>
+
+
+<!-- ======================================================
+     ADMIN LOGIN PAGE
+====================================================== -->
 
 <section class="auth-section">
 
@@ -128,7 +187,8 @@ include __DIR__ . '/../includes/header.php';
 
         <div class="auth-card fade-in">
 
-            <!-- Header -->
+
+            <!-- HEADER -->
             <div class="brand-header">
 
                 <i
@@ -145,7 +205,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
 
 
-            <!-- Error Messages -->
+            <!-- ERRORS -->
             <?php if (!empty($errors)): ?>
 
                 <div class="alert alert-danger">
@@ -173,10 +233,11 @@ include __DIR__ . '/../includes/header.php';
             <?php endif; ?>
 
 
-            <!-- Login Form -->
+            <!-- LOGIN FORM -->
             <form method="POST" action="">
 
-                <!-- Email -->
+
+                <!-- EMAIL -->
                 <div class="mb-3">
 
                     <label
@@ -186,11 +247,13 @@ include __DIR__ . '/../includes/header.php';
                         Email Address
                     </label>
 
+
                     <div class="input-group">
 
                         <span class="input-group-text">
                             <i class="fas fa-envelope"></i>
                         </span>
+
 
                         <input
                             type="email"
@@ -198,7 +261,7 @@ include __DIR__ . '/../includes/header.php';
                             id="email"
                             name="email"
                             required
-                            autocomplete="email"
+                            autocomplete="username"
                             value="<?php
                                 echo htmlspecialchars(
                                     $_POST['email'] ?? '',
@@ -214,7 +277,7 @@ include __DIR__ . '/../includes/header.php';
                 </div>
 
 
-                <!-- Password -->
+                <!-- PASSWORD -->
                 <div class="mb-4">
 
                     <label
@@ -224,11 +287,13 @@ include __DIR__ . '/../includes/header.php';
                         Password
                     </label>
 
+
                     <div class="input-group">
 
                         <span class="input-group-text">
                             <i class="fas fa-lock"></i>
                         </span>
+
 
                         <input
                             type="password"
@@ -245,7 +310,7 @@ include __DIR__ . '/../includes/header.php';
                 </div>
 
 
-                <!-- Login Button -->
+                <!-- LOGIN BUTTON -->
                 <button
                     type="submit"
                     class="btn btn-auth"
@@ -268,7 +333,7 @@ include __DIR__ . '/../includes/header.php';
             </form>
 
 
-            <!-- Demo Credentials -->
+            <!-- DEMO CREDENTIALS -->
             <div
                 class="mt-4 p-3"
                 style="
@@ -287,6 +352,7 @@ include __DIR__ . '/../includes/header.php';
                     Demo Admin Credentials:
 
                 </p>
+
 
                 <p
                     class="mb-0"
@@ -309,7 +375,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
 
 
-            <!-- Back to Website -->
+            <!-- BACK TO WEBSITE -->
             <div class="text-center mt-3">
 
                 <a
@@ -325,6 +391,7 @@ include __DIR__ . '/../includes/header.php';
 
             </div>
 
+
         </div>
 
     </div>
@@ -332,6 +399,7 @@ include __DIR__ . '/../includes/header.php';
 </section>
 
 
+<!-- BOOTSTRAP -->
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
 ></script>

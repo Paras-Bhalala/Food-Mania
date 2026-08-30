@@ -111,12 +111,25 @@ img {
    NAVBAR
    ============================================================ */
 #mainNavbar {
+    overflow-x: hidden; /* hide any overflow from navbar items */
     background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
     backdrop-filter: blur(12px);
     padding: 0.6rem 0;
     box-shadow: var(--shadow-md);
     z-index: 1050;
     transition: var(--transition);
+}
+
+/* Ensure body can scroll horizontally if needed */
+body {
+    overflow-x: auto;
+}
+
+/* Make containers respect viewport width */
+.container {
+    max-width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
 }
 
 #mainNavbar.scrolled {
@@ -1332,17 +1345,18 @@ img {
     background: var(--dark);
     color: var(--white);
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.75rem; /* smaller header text */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: none;
-    padding: 0.85rem 1rem;
+    padding: 0.5rem 0.75rem; /* tighter padding */
 }
 
 .table-custom tbody td {
-    padding: 0.85rem 1rem;
+    padding: 0.5rem 0.75rem; /* tighter padding */
     vertical-align: middle;
     border-bottom: 1px solid var(--gray-100);
+    font-size: 0.75rem; /* smaller cell text */
 }
 
 .table-custom tbody tr:hover {
