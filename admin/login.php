@@ -334,15 +334,15 @@ include __DIR__ . '/../includes/header.php';
 
 
             <!-- DEMO CREDENTIALS -->
-            <div
+            <!-- <div
                 class="mt-4 p-3"
                 style="
                     background: var(--gray-100);
                     border-radius: var(--radius-sm);
                 "
-            >
+            > -->
 
-                <p
+                <!-- <p
                     class="mb-1 fw-600 text-muted"
                     style="font-size: 0.8rem;"
                 >
@@ -351,10 +351,10 @@ include __DIR__ . '/../includes/header.php';
 
                     Demo Admin Credentials:
 
-                </p>
+                </p> -->
 
 
-                <p
+                <!-- <p
                     class="mb-0"
                     style="
                         font-size: 0.8rem;
@@ -370,7 +370,7 @@ include __DIR__ . '/../includes/header.php';
                     Password:
                     <code>krina123</code>
 
-                </p>
+                </p> -->
 
             </div>
 

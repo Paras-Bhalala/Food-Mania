@@ -32,5 +32,6 @@ $pageDescription = $pageDescription ?? 'Food-Mania — Delicious food delivered 
     
     <!-- Custom CSS -->
     <link href="<?php echo SITE_URL; ?>/assets/css/style.css" rel="stylesheet">
+<link href="<?php echo SITE_URL; ?>/assets/css/hero.css" rel="stylesheet">
 </head>
 <body>

@@ -47,46 +47,50 @@ include __DIR__ . '/includes/navbar.php';
      HERO SECTION
      ============================================================ -->
 <section class="hero-section">
+    <!-- <video autoplay muted loop playsinline>
+        <source src="<?php echo SITE_URL; ?>/assets/videos/hero.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video> -->
+    
+    <div class="hero-gradient"></div>
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6 hero-content">
-                <h1 class="hero-title fade-in">
-                    Delicious Food<br>
-                    <span class="highlight">Delivered Fast</span><br>
-                    To Your Door
-                </h1>
-                <p class="hero-subtitle fade-in">
-                    From wood-fired pizzas to authentic Indian curries, crispy burgers to sweet desserts — 
-                    experience restaurant-quality food at your doorstep.
-                </p>
-                <div class="hero-buttons fade-in">
-                    <a href="<?php echo SITE_URL; ?>/user/menu.php" class="btn btn-primary-custom me-3">
-                        <i class="fas fa-utensils me-2"></i> Explore Menu
-                    </a>
-                    <a href="#categories" class="btn btn-outline-light-custom">
-                        <i class="fas fa-th-large me-2"></i> Browse Categories
-                    </a>
-                </div>
-                
-                <div class="hero-stats fade-in">
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">50+</span>
-                        <span class="hero-stat-label">Menu Items</span>
+            <div class="col-lg-6">
+                <div class="hero-content-glass">
+                    <h1 class="hero-title fade-in">
+                        Delicious Food<br>
+                        <span class="highlight">Delivered Fast</span><br>
+                        To Your Door
+                    </h1>
+                    <p class="hero-subtitle fade-in">
+                        From wood-fired pizzas to authentic Indian curries, crispy burgers to sweet desserts — experience restaurant-quality food at your doorstep.
+                    </p>
+                    <div class="hero-buttons fade-in">
+                        <a href="<?php echo SITE_URL; ?>/user/menu.php" class="btn btn-primary-custom me-3">
+                            <i class="fas fa-utensils me-2"></i> Explore Menu
+                        </a>
+                        <a href="#categories" class="btn btn-outline-light-custom">
+                            <i class="fas fa-th-large me-2"></i> Browse Categories
+                        </a>
                     </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">1000+</span>
-                        <span class="hero-stat-label">Happy Customers</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">30</span>
-                        <span class="hero-stat-label">Min Delivery</span>
+                    <div class="hero-stats fade-in">
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">50+</span>
+                            <span class="hero-stat-label">Menu Items</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">1000+</span>
+                            <span class="hero-stat-label">Happy Customers</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">30</span>
+                            <span class="hero-stat-label">Min Delivery</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 text-center hero-image-wrapper d-none d-lg-block">
-                <div style="width:450px;height:450px;margin:0 auto;border-radius:50%;background:linear-gradient(135deg,rgba(255,107,53,0.2),rgba(255,193,7,0.2));display:flex;align-items:center;justify-content:center;">
-                    <i class="fas fa-pizza-slice" style="font-size:12rem;color:rgba(255,193,7,0.5);"></i>
-                </div>
+                <img src="<?php echo SITE_URL; ?>/assets/images/pizza1.jfif" alt="Pizza" class="img-fluid" style="max-height:600px; border-radius: 50%;">
             </div>
         </div>
     </div>
