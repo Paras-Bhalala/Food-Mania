@@ -19,7 +19,8 @@ if (isLoggedIn()) {
     <div class="container">
         <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" href="<?php echo SITE_URL; ?>/">
-            <i class="fas fa-utensils me-2"></i>
+            <!-- <i class="fas fa-utensils me-2"></i> -->
+            <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="Food Mania" class="navbar-logo me-2" style="height:30px;">
             <span class="brand-text">Food<span class="text-accent">Mania</span></span>
         </a>
         
